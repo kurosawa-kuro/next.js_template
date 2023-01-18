@@ -6,7 +6,7 @@ import { User } from '@prisma/client';
 
 
 
-export default function Home(props: { feed: User[] }) {
+export default function Home(props: { users: User[] }) {
 
   return (
     <>
@@ -19,7 +19,13 @@ export default function Home(props: { feed: User[] }) {
       <main className={styles.main}>
         <h1>next.js_prisma</h1>
         <ul>
-          {props.feed.map((x: any) => { return <li>{x.name}</li> })}
+          {
+            props.users.map((user: User) => {
+              return <li key={user.id}>
+                {user.name}
+              </li>
+            })
+          }
         </ul>
       </main>
     </>
@@ -27,9 +33,7 @@ export default function Home(props: { feed: User[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed: User[] = await prisma.user.findMany({});
+  const users: User[] = await prisma.user.findMany({});
 
-  console.log("getStaticProps")
-  // console.log({ feed })
-  return { props: { feed } };
+  return { props: { users } };
 };
