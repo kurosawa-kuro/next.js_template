@@ -1,7 +1,13 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
+import { prisma } from '../lib/prisma';
+import { GetStaticProps } from 'next';
+import { User } from '@prisma/client';
 
-export default function Home() {
+
+
+export default function Home(props: { feed: User[] }) {
+
   return (
     <>
       <Head>
@@ -11,12 +17,19 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-
-        <div className={styles.center}>
-          <h1>next.js_prisma</h1>
-        </div>
-
+        <h1>next.js_prisma</h1>
+        <ul>
+          {props.feed.map((x: any) => { return <li>{x.name}</li> })}
+        </ul>
       </main>
     </>
   )
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  const feed: User[] = await prisma.user.findMany({});
+
+  console.log("getStaticProps")
+  // console.log({ feed })
+  return { props: { feed } };
+};
